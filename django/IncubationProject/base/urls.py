@@ -20,6 +20,10 @@ urlpatterns = [
     path('adminlogin/',views.Adminlogin.as_view(),name="adminlogin"),
 
     path('application/',views.Applications.as_view(),name="application"),
+    path('approveRequest/<str:id>',views.approveRequest.as_view(),name="approveRequest"),
+    path('declineRequest/<str:id>',views.declineRequest.as_view(),name="declineRequest"),
+
+
 
 
 

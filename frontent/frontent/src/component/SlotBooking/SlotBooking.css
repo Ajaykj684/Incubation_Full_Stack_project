@@ -1,0 +1,51 @@
+#app {
+}
+
+h1 {
+  text-align: center;
+}
+
+.container {
+  width: 100%;
+  margin: auto;
+  display: flex;
+}
+
+.grid td {
+  width: 180px;
+  height: 50px;
+  padding: 50px 30px;
+  border: 2px solid orange;
+  text-align: center;
+  float: right;
+  margin: 5px;
+  margin-top: 29px;
+  margin-left: 5px;
+}
+
+.grid td:hover {
+  opacity: .7;
+  cursor: pointer;
+}
+
+.reserved {
+  background: orange;
+  color: #fff;
+  display: inline-block;
+}
+
+.reserved::after {
+  content: 'RESERVED'
+}
+
+.available::after {
+  content: 'AVAILABLE'
+}
+
+.available {
+  color: #333;
+}
+
+li {
+  list-style: none;
+}

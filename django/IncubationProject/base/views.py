@@ -16,13 +16,12 @@ from django.contrib.auth.models import User
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
+        
         token = super().get_token(user)
 
-        token['is_staff'] = user.is_staff
-        token['email'] = user.email
-        token['is_active'] = user.is_active
-
-
+        token['username'] = user.username
+        token['is_superuser'] = user.is_superuser
+        
         return token
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -32,11 +31,11 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 def getRoutes(request):
     routes =[
-        '/token',
-        '/token/refresh',
-       print("here")
+        '/api/token',
+        '/api/token/refresh',
+       
 
-    ]
+        ]
     return Response(routes)
 
 class Dashboard(APIView):
@@ -60,7 +59,16 @@ class Userlogin(APIView):
 
 class Usersignup(APIView):
     def post(self,request):
-        return Response("<h1>Signed in</h1>")
+
+        body = request.body.decode('utf-8')
+        body = json.loads(body)
+        username = body['username']
+        email = body['email']
+        phone = body['phone']
+        password=body['password']
+        User.objects.create(username=username, email=email,password=password)
+        
+        return Response(200)
 
 class Adminlogin(APIView):
     def post(self,request):
@@ -79,9 +87,7 @@ class Applications(APIView):
         name=body['user']
         user =User.objects.get(email=name) 
     
-
-        application = Application.objects.create(email=email,name=name,phone=phone, address=address, user = user, applied=True)
-        
+        Application.objects.create(email=email,name=name,phone=phone, address=address, user = user, applied=True)
         
         return Response (200)
     
@@ -92,3 +98,15 @@ class Applications(APIView):
         return Response(SerializeObj.data)
 
 
+class approveRequest(APIView):
+    def post(self,request,id):
+        application = Application.objects.filter(id=id)
+        application.update(Approved=True)
+        return Response (200)
+
+
+class declineRequest(APIView):
+     def post(self,request,id):
+        application = Application.objects.filter(id=id)
+        application.update(Denied=True)
+        return Response (200)

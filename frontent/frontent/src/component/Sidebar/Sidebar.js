@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import axios from 'axios';
+import './Sidebar.css'
 
 import {useEffect,useState,useContext} from 'react'
 import { styled, useTheme } from '@mui/material/styles';
@@ -23,6 +24,10 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import { useNavigate } from 'react-router-dom';
+
+import SlotBooking from '../SlotBooking/SlotBooking'
+import AuthContext from '../../context/Authcontext'
+
 
 const drawerWidth = 240;
 
@@ -71,45 +76,102 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
+
+
+
 export default function PersistentDrawerLeft() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
-    setOpen(true);
+    setOpen(true);    
   };
 
   const handleDrawerClose = () => {
     setOpen(false);
   };
 
+  let {logout} = useContext(AuthContext)
 
-  const [ select, setSelect]=useState([]);
   const [ data, setData]=useState([]);
-
+  const [ select, setSelect]=useState([]);
+  const [ show, setShow ]=useState([]);
+  const [slot, setSlot] = useState([])
 
   const navigate = useNavigate();
+
+  useEffect(()=>{ axios.get("http://127.0.0.1:8000/application/").then((res)=>setData(res.data))
+  
+  },[select])
+
+
+
+  useEffect(()=>{
+  const newdata = data.filter(val =>{ return val.Approved === false && val.Denied == false }); setShow(newdata)},[data])
+
+
+
 
 
 const selectItem=(text)=>{
  if(text==='APPLICATION LIST'){
-  axios.get("http://127.0.0.1:8000/application/").then((res)=>{
-    console.log(res,"lllll")
-    alert("hai")
-    const dat=res.filter(val=>{
-      return val.approved == 'False'
-    });
-    setData(dat)
-    console.log(data,"00000")
-  })
+     setSlot(1)
+     const newdata = data.filter(val =>{
+     
+      return val.Approved === false && val.Denied == false
+     })
+     setShow(newdata)
+  }
+  
+  else if(text==='APPROVED LIST'){
+    setSlot(2)
+    const newdata = data.filter(val =>{
+     
+      return val.Approved === true
+     })
+     setShow(newdata)
+  
+
+  }
+
+  else if(text==='DECLINED LIST'){
+    setSlot(2)
+    const newdata = data.filter(val =>{
+     
+      return val.Denied === true
+     })
+     setShow(newdata)
+
   }
       
  }
 
-    
+ const ApproveRequest=(id)=>{
+  axios.post(`http://127.0.0.1:8000/approveRequest/${id}`).then((res)=>{
+   
+    setSelect(res)
+  })
+
+ }
 
 
+ const DeclineRequest=(id)=>{
+  axios.post(`http://127.0.0.1:8000/declineRequest/${id}`).then((res)=>{
+    setSelect(res,1)
+  })
 
+ }
+
+
+const SlotBook=(text)=>{
+  if(text==="BOOKING SLOT"){
+    setSlot(3)
+  }
+  else if(text==="LOGOUT"){
+    setSlot(3)
+    logout()
+  }
+}
 
 
 
@@ -128,11 +190,15 @@ const selectItem=(text)=>{
           >
             <MenuIcon />
           </IconButton>
+          
           <Typography variant="h6" noWrap component="div">
             WELCOME ADMIN
           </Typography>
+         
         </Toolbar>
+       
       </AppBar>
+     
       <Drawer
         sx={{
           width: drawerWidth,
@@ -173,7 +239,7 @@ const selectItem=(text)=>{
                 <ListItemIcon>
                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary={text} onClick={()=>{SlotBook(text)}} />
               </ListItemButton>
             </ListItem>
           ))}
@@ -183,29 +249,77 @@ const selectItem=(text)=>{
         <DrawerHeader />
         <Typography paragraph>
           
-
+       { 4 === 4 &&
         <table className="table table-bordered">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
-                <th scope="col">Handle</th>
-              </tr>
+            <thead> 
+            { slot === 1 &&
+                 <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Phone number</th>
+              
+                <th scope="col">View</th>
+                <th scope="col">Approve</th>
+                <th scope="col">Decline</th>
+                
+
+              </tr>}
+              { slot === 2 &&
+                 <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Phone number</th>
+              
+                <th scope="col">View</th>
+               
+                
+
+              </tr>}
             </thead>
             <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-              </tr>
               
+           {show.map((value)=>(
+             slot === 1 &&
+              <tr>
+               
+                <td>{value.name}</td>
+                <td>{value.email}</td>
+                <td>{value.phone}</td>
+              
+                <td ><button className="Viewbutton">View</button></td>
+                <td><button className="Greenbutton" onClick={()=>{ApproveRequest(value.id)}}>Approve</button></td>
+                <td><button className="Redbutton" onClick={()=>{DeclineRequest(value.id)}}>Decline</button></td>
+
+              </tr>
+             ))} 
+
+
+
+            {show.map((value)=>(
+             slot === 2 &&
+              <tr>
+               
+                <td>{value.name}</td>
+                <td>{value.email}</td>
+                <td>{value.phone}</td>
+              
+                <td ><button className="Viewbutton">View</button></td>
+
+              </tr>
+             ))} 
             </tbody>
-          </table>
+          </table>}
+          { slot === 3 &&
+              <SlotBooking/>
+          }
+
         </Typography>
        
       </Main>
     </Box>
+   
   );
+  
 }
+
+
