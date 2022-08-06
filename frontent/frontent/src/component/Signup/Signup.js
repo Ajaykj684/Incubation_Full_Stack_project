@@ -6,19 +6,23 @@ import {useNavigate} from 'react-router-dom'
 
 function Signup() {
   let {userSignup } = useContext(AuthContext)
+  let {msg} = useContext(AuthContext)
+
+
   const Navigate = useNavigate()
 
   return (
    
 
-<div className="section" > 
+<div className="sectionn" > 
 
 
 <div className="section-center">
-<div className="container">
+<div className="container1">
     <div className="row">
         <div className="booking-form">
             <div className="form-header">
+                {msg && <h6 className='msg'>{msg}</h6>}
                 <h1>Sign Up</h1>
             </div>
             <form   onSubmit={userSignup}>
@@ -40,7 +44,7 @@ function Signup() {
                             <div className="row">
                                 <div className="col-md-12">
                                     <div className="form-group">
-                                        <input className="form-control" type="text" placeholder="password" name="password"  />
+                                        <input className="form-control" type="password" placeholder="password" name="password"  />
                                             <span className="form-label">password</span>
                                         </div>
                                     </div>

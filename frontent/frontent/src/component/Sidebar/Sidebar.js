@@ -29,6 +29,62 @@ import SlotBooking from '../SlotBooking/SlotBooking'
 import AuthContext from '../../context/Authcontext'
 
 
+import PropTypes from 'prop-types';
+import Button from '@mui/material/Button';
+
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import CloseIcon from '@mui/icons-material/Close';
+
+import DialogContentText from '@mui/material/DialogContentText';
+import useMediaQuery from '@mui/material/useMediaQuery';
+
+
+
+
+
+
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialogContent-root': {
+    padding: theme.spacing(2),
+  },
+  '& .MuiDialogActions-root': {
+    padding: theme.spacing(1),
+  },
+}));
+
+const BootstrapDialogTitle = (props) => {
+  const { children, onClose, ...other } = props;
+
+  return (
+    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+      {children}
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </DialogTitle>
+  );
+};
+
+BootstrapDialogTitle.propTypes = {
+  children: PropTypes.node,
+  onClose: PropTypes.func.isRequired,
+};
+
+
 const drawerWidth = 240;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -97,28 +153,55 @@ export default function PersistentDrawerLeft() {
   const [ select, setSelect]=useState([]);
   const [ show, setShow ]=useState([]);
   const [slot, setSlot] = useState([])
+  const [slt, setSlt] = useState([])
+
+  const [detail, setDetail] = useState([])
+
 
   const navigate = useNavigate();
 
   useEffect(()=>{ axios.get("http://127.0.0.1:8000/application/").then((res)=>setData(res.data))
+  setSlot(1)
   
   },[select])
 
 
 
   useEffect(()=>{
-  const newdata = data.filter(val =>{ return val.Approved === false && val.Denied == false }); setShow(newdata)},[data])
+  const newdata = data.filter(val =>{ return val.Approved === false && val.Denied === false }); setShow(newdata)},[data])
+
+
+  // Application View
+
+  const [openn, setOpenn] =useState(false);
+
+  const handleClickOpen = (id) => {
+    axios.post(`http://127.0.0.1:8000/detailRequest/${id}`).then((res)=>{
+    setDetail(res)
+   
+    setSlt(5)
+
+    setOpenn(true);
+  })};
+
+  const handleClose = () => {
+    setOpenn(false);
+    setSlt(null)
+  };
 
 
 
 
+
+
+// routing
 
 const selectItem=(text)=>{
  if(text==='APPLICATION LIST'){
      setSlot(1)
      const newdata = data.filter(val =>{
      
-      return val.Approved === false && val.Denied == false
+      return val.Approved === false && val.Denied === false
      })
      setShow(newdata)
   }
@@ -146,32 +229,104 @@ const selectItem=(text)=>{
       
  }
 
- const ApproveRequest=(id)=>{
-  axios.post(`http://127.0.0.1:8000/approveRequest/${id}`).then((res)=>{
-   
-    setSelect(res)
-  })
-
- }
-
-
- const DeclineRequest=(id)=>{
-  axios.post(`http://127.0.0.1:8000/declineRequest/${id}`).then((res)=>{
-    setSelect(res,1)
-  })
-
- }
-
 
 const SlotBook=(text)=>{
   if(text==="BOOKING SLOT"){
     setSlot(3)
   }
   else if(text==="LOGOUT"){
-    setSlot(3)
-    logout()
+    setSlot(6)
+    setOpen(true);
+    
   }
 }
+
+console.log(show)
+
+//  Application Approve
+
+ const [ appId , setAppId]=useState([])
+
+ const ApproveDiologe=(id)=>{
+  setAppId(id)
+  setSlot(7)
+  setOpen(true);
+ }
+
+ const ApproveConfirm=()=>{
+  axios.post(`http://127.0.0.1:8000/approveRequest/${appId}`).then((res)=>{
+    setSlot(1)
+    setSelect(res)
+    setAppId(null)
+    setSlot(null)
+    setOpen(false);
+
+
+ })}
+
+ const ApproveClose=()=>{
+  setSlot(null);
+  setOpen(false);
+  setSlot(1)
+  setAppId(null)
+
+  }
+
+
+
+ 
+// Application Decline
+
+
+const DeclineDiologe=(id)=>{
+  setAppId(id)
+  setSlot(8)
+  setOpen(true);
+ }
+
+
+ const DeclineConfirm=()=>{
+  axios.post(`http://127.0.0.1:8000/declineRequest/${appId}`).then((res)=>{
+    setSelect(res,1)
+    setAppId(null)
+    setSlot(null)
+    setOpen(false);
+  })
+
+ }
+
+
+ const DeclineClose=()=>{
+  setSlot(null);
+  setOpen(false);
+  setSlot(1)
+  setAppId(null)
+
+  }
+
+
+
+
+
+// admin Logout
+
+const [opens, setOpens] = React.useState(false);
+
+const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+
+
+
+const handleClosing = () => {
+  setSlot(1)
+  setOpens(false);
+};
+
+const logoutConfirm=()=>{
+  setSlot(null)
+  setOpens(false);
+  logout()
+}
+
 
 
 
@@ -191,7 +346,7 @@ const SlotBook=(text)=>{
             <MenuIcon />
           </IconButton>
           
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant="h6" noWrap component="div" className="welcomeTitle">
             WELCOME ADMIN
           </Typography>
          
@@ -248,8 +403,7 @@ const SlotBook=(text)=>{
       <Main open={open}>
         <DrawerHeader />
         <Typography paragraph>
-          
-       { 4 === 4 &&
+      
         <table className="table table-bordered">
             <thead> 
             { slot === 1 &&
@@ -258,7 +412,7 @@ const SlotBook=(text)=>{
                 <th scope="col">Email</th>
                 <th scope="col">Phone number</th>
               
-                <th scope="col">View</th>
+                <th scope="col" >View</th>
                 <th scope="col">Approve</th>
                 <th scope="col">Decline</th>
                 
@@ -286,9 +440,9 @@ const SlotBook=(text)=>{
                 <td>{value.email}</td>
                 <td>{value.phone}</td>
               
-                <td ><button className="Viewbutton">View</button></td>
-                <td><button className="Greenbutton" onClick={()=>{ApproveRequest(value.id)}}>Approve</button></td>
-                <td><button className="Redbutton" onClick={()=>{DeclineRequest(value.id)}}>Decline</button></td>
+                <td ><button className="Viewbutton" onClick={()=>{handleClickOpen(value.id)}}>View</button></td>
+                <td><button className="Greenbutton" onClick={()=>{ApproveDiologe(value.id)}}>Approve</button></td>
+                <td><button className="Redbutton" onClick={()=>{DeclineDiologe(value.id)}}>Decline</button></td>
 
               </tr>
              ))} 
@@ -303,23 +457,182 @@ const SlotBook=(text)=>{
                 <td>{value.email}</td>
                 <td>{value.phone}</td>
               
-                <td ><button className="Viewbutton">View</button></td>
+                <td ><button className="Viewbutton"  onClick={()=>{handleClickOpen(value.id)}}>View</button></td>
 
               </tr>
              ))} 
             </tbody>
-          </table>}
-          { slot === 3 &&
-              <SlotBooking/>
-          }
+          </table>
+
+
+
+{ slt === 5 &&
+
+
+    <div>
+    
+      <BootstrapDialog
+        onClose={handleClose}
+        aria-labelledby="customized-dialog-title"
+        open={open}
+      >
+        <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
+          Application Details
+        </BootstrapDialogTitle>
+        <DialogContent dividers>
+          <Typography gutterBottom>
+          <List>
+          <ListItem button>
+            <ListItemText primary={detail.data.address} secondary="Address" />
+          </ListItem>
+          <Divider />
+          <ListItem button>
+            <ListItemText
+              primary={detail.data.email} 
+              secondary="email"/>
+          </ListItem>
+          <Divider />
+          <ListItem button>
+            <ListItemText primary={detail.data.name} secondary="Name" />
+          </ListItem>
+          <Divider />
+          <ListItem button>
+            <ListItemText primary={detail.data.phone} secondary="Phone" />
+          </ListItem>
+          <Divider />
+        </List>
+          </Typography>
+        
+         
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={handleClose}>
+           OK
+          </Button>
+        </DialogActions>
+      </BootstrapDialog>
+    </div>
+
+
+}
+
+
+ { slot === 3 &&
+     <SlotBooking/>
+ }
+
+
+
+
+{slot === 6 && 
+    <div>
+     
+      <Dialog
+        fullScreen={fullScreen}
+        open={open}
+        onClose={handleClosing}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="responsive-dialog-title">
+         
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Do you want to Logout ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={handleClosing}>
+          <h6>Cancel</h6> 
+          </Button>
+          <Button autoFocus onClick={logoutConfirm}>
+          <h6 className='logout'>Logout</h6> 
+          </Button>
+          
+        </DialogActions>
+      </Dialog>
+    </div>
+    }
+
+
+
+
+
+
+{slot === 7 && 
+    <div>
+     
+      <Dialog
+        fullScreen={fullScreen}
+        open={open}
+        onClose={ApproveClose}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="responsive-dialog-title">
+         
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Do you want to <b>Approve</b> this Application ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={ApproveClose}>
+          <h6>Cancel</h6> 
+          </Button>
+          <Button autoFocus onClick={ApproveConfirm}>
+          <h6 className='Approve'>Approve</h6> 
+          </Button>
+          
+        </DialogActions>
+      </Dialog>
+    </div>
+    }
+
+
+
+
+
+{slot === 8 && 
+    <div>
+     
+      <Dialog
+        fullScreen={fullScreen}
+        open={open}
+        onClose={DeclineClose}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="responsive-dialog-title">
+         
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Do you want to <b>Decline</b> this Application ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={DeclineClose}>
+          <h6>Cancel</h6> 
+          </Button>
+          <Button autoFocus onClick={DeclineConfirm}>
+          <h6 className='Decline'>Decline</h6> 
+          </Button>
+          
+        </DialogActions>
+      </Dialog>
+    </div>
+    }
+
+
+
 
         </Typography>
        
       </Main>
     </Box>
+
+    
    
   );
   
 }
-
-

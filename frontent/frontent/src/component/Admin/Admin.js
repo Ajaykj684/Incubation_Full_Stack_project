@@ -6,9 +6,6 @@ import Sidebar from '../Sidebar/Sidebar'
 
 function Admin() {
 
- 
-
-
 
   return (
     

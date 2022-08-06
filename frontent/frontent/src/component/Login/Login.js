@@ -8,20 +8,25 @@ function Login() {
 
   let {login } = useContext(AuthContext)
   let {user } = useContext(AuthContext)
+  let {msg} = useContext(AuthContext)
+
+  console.log({msg},"ooo")
+  
   const Navigate = useNavigate()
 
   return (
    
 
-<div className="section" > 
+<div className="sectionn" > 
 
 
 <div className="section-center">
-<div className="container">
+<div className="container1">
     <div className="row">
         <div className="booking-form">
             <div className="form-header">
-                <h1>Sign Up</h1>
+                <h1>Sign In</h1>
+                {msg && <h6 className='msg'>{msg}</h6>}
             </div>
             <form   onSubmit={login}>
               
@@ -37,7 +42,7 @@ function Login() {
                             <div className="row">
                                 <div className="col-md-12">
                                     <div className="form-group">
-                                        <input className="form-control" type="text" placeholder="password" name="password"  />
+                                        <input className="form-control" type="password" placeholder="password" name="password"  />
                                             <span className="form-label">password</span>
                                         </div>
                                     </div>

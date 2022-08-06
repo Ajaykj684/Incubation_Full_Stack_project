@@ -17,63 +17,6 @@
   width: 70px;
 }
 
-.table{
-  color:white;
-}
-
-
-
-
-
-
-#app {
-}
-
-h1 {
-  text-align: center;
-}
-
-.container {
-  width: 600px;
-  margin: auto;
-}
-
-.grid td {
-  width: 80px;
-  height: 50px;
-  padding: 50px 30px;
-  border: 2px solid orange;
-  text-align: center;
-  float: left;
-  margin: 5px;
-}
-
-.grid td:hover {
-  opacity: .7;
-  cursor: pointer;
-}
-
-.reserved {
-  background: orange;
-  color: #fff;
-  display: inline-block;
-}
-
-.reserved::after {
-  content: 'RESERVED'
-}
-
-.available::after {
-  content: 'AVAILABLE'
-}
-
-.available {
-  color: #333;
-}
-
-li {
-  list-style: none;
-}
 
 .logoutbutton{
   height: 30px;
@@ -83,4 +26,16 @@ li {
   padding-bottom: 2rem;
   margin-left: 90%;
   color: rgb(202, 52, 97);
+}
+
+.logout{
+  color: red;
+}
+
+.Approve{
+  color: green;
+}
+
+.welcomeTitle{
+  padding-left: 35%;
 }

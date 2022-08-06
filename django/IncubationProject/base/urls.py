@@ -15,14 +15,18 @@ from rest_framework_simplejwt.views import (
 
 urlpatterns = [
     path('',views.Dashboard.as_view(),name="dashboard"),
-    path('login/',views.Userlogin.as_view(),name="login"),
     path('signup/',views.Usersignup.as_view(),name="signup"),
-    path('adminlogin/',views.Adminlogin.as_view(),name="adminlogin"),
+   
+    path('detailRequest/<str:id>',views.detailRequest.as_view(),name="detailRequest"),
 
     path('application/',views.Applications.as_view(),name="application"),
     path('approveRequest/<str:id>',views.approveRequest.as_view(),name="approveRequest"),
     path('declineRequest/<str:id>',views.declineRequest.as_view(),name="declineRequest"),
 
+
+    path('seat/',views.seat.as_view(),name="slot"),
+    path('seatalloting/<str:id>',views.seatalloting.as_view(),name="seatalloting"),
+    path('reservedDetail/<str:id>',views.reservedDetail.as_view(),name="seatalloting"),
 
 
 

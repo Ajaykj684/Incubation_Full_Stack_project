@@ -1,13 +1,21 @@
 
+.sectionn {
+  position: relative;
+  height: 110vh;
+  background: linear-gradient(rgb(67, 101, 225),rgb(30, 233, 209));
 
- 
 
-  
+}
+
+.container1{
+  padding-top: 4rem;
+}
+   
   .Applogin {
     background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSD36zYexikxnIEp2QaiHqiIimfpuznE4lRZdsoDz14zUAxpUzG-TQHM6y5suEu1DPfySM&usqp=CAU");
 
     background-color: transparent;
-    border-radius: 4px;
+   
     box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.2);
     max-width: 615px;
     padding-bottom: 30px;
@@ -64,7 +72,7 @@
   
   button {
     border-radius: 5px;
-    border: none;
+   
     color: #fff;
     cursor: pointer;
     font-family: 'Open Sans', sans-serif;
@@ -72,10 +80,10 @@
     font-weight: bold;
     letter-spacing: 1px;
     max-width: 420px;
-    outline: 0;
+  
     padding: 10px 0;
-    transition: background 0.3s;
-    width: 80%;
+  
+  
   }
   button.primary {
     background: #f58733;

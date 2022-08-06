@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
-from .models import User,Rooms,Application
-from .serialize import UserSerializer,RoomSerializer,ApplicationSerializer
+from .models import User,Rooms,Application,slot
+from .serialize import UserSerializer,RoomSerializer,ApplicationSerializer,SlotSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -53,9 +53,6 @@ class Dashboard(APIView):
 
 
 
-class Userlogin(APIView):
-    def post(self,request):
-        return Response("<h1>logged in</h1>")
 
 class Usersignup(APIView):
     def post(self,request):
@@ -70,9 +67,13 @@ class Usersignup(APIView):
         
         return Response(200)
 
-class Adminlogin(APIView):
-    def post(self,request):
-        return Response("<h1>Signed in</h1>")
+class detailRequest(APIView):
+    def post(self,request,id):
+        
+        app = Application.objects.get(id=id)
+        print(app.address,"iiii")
+        SerializeObj=ApplicationSerializer(app)
+        return Response(SerializeObj.data)
 
 
 class Applications(APIView):
@@ -84,8 +85,8 @@ class Applications(APIView):
         address= body['address']
         phone= body['phone']
         name=body['name']
-        name=body['user']
-        user =User.objects.get(email=name) 
+        nam=body['user']
+        user =User.objects.get(email=nam) 
     
         Application.objects.create(email=email,name=name,phone=phone, address=address, user = user, applied=True)
         
@@ -94,7 +95,7 @@ class Applications(APIView):
     def get ( self,request):
         app = Application.objects.all()
         SerializeObj=ApplicationSerializer(app,many=True)
-        print(SerializeObj.data)
+       
         return Response(SerializeObj.data)
 
 
@@ -110,3 +111,32 @@ class declineRequest(APIView):
         application = Application.objects.filter(id=id)
         application.update(Denied=True)
         return Response (200)
+
+
+class seat(APIView):
+    def get(self,request):
+        seat = slot.objects.all()
+        serializeobj=SlotSerializer(seat,many=True)
+        return Response(serializeobj.data)
+
+
+class seatalloting(APIView):
+    def post(self,request,id):
+       
+        body = request.body.decode('utf-8')
+        body = json.loads(body)
+        num=body["number"]
+        app = Application.objects.filter(id= num )
+        app.update(alloted = True , alloted_slot = id)
+        seat =  slot.objects.filter(id = id)
+      
+        seat.update( reserved=True , available=False)
+        return Response(200)
+
+
+class reservedDetail(APIView):
+    def post(self,request,id):
+        add = Application.objects.get(alloted_slot = id)
+        serializeobj=ApplicationSerializer(add)
+        print(serializeobj.data)
+        return Response(serializeobj.data)

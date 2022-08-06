@@ -1,5 +1,11 @@
 
+.sectionn {
+  position: relative;
+  height: 120vh;
+  background: linear-gradient(rgb(67, 101, 225),rgb(30, 233, 209));
 
+
+}
  
 
   .App {
@@ -47,7 +53,6 @@
   .input-group > input {
     background: #f2f2f5;
     border-radius: 4px;
-    border: 1px solid #e5e5e5;
     color: #676767;
     font-size: 16px;
     height: 40px;
@@ -63,22 +68,7 @@
     color: #c4c4c4;
     font-size: 16px;
   }
-  
-  button {
-    border-radius: 5px;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-    font-family: 'Open Sans', sans-serif;
-    font-size: 18px;
-    font-weight: bold;
-    letter-spacing: 1px;
-    max-width: 420px;
-    outline: 0;
-    padding: 10px 0;
-    transition: background 0.3s;
-    width: 80%;
-  }
+
   button.primary {
     background: #f58733;
   }
@@ -103,4 +93,9 @@
   .text{
     margin-left: 30%;
     margin-top: 2rem;
+  }
+
+  .msg{
+    color: #11ca00;
+    margin: 13px;
   }
