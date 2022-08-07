@@ -10,7 +10,6 @@ function Login() {
   let {user } = useContext(AuthContext)
   let {msg} = useContext(AuthContext)
 
-  console.log({msg},"ooo")
   
   const Navigate = useNavigate()
 

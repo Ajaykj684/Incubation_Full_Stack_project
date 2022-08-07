@@ -18,7 +18,7 @@ export const AuthProvider = ({children})=> {
     let [loading,setLoading] = useState(true)
 
     const Navigate = useNavigate()
-    console.log(msg,"ggg")
+   
 
     useEffect(()=>{ 
         setMsg(null)
@@ -95,7 +95,7 @@ export const AuthProvider = ({children})=> {
         let response = await axios.post("http://127.0.0.1:8000/signup/",
         {'username':e.target.email.value, 'email':e.target.email.value, 'password':e.target.password.value , 'phone':e.target.phone.value})
         
-        console.log(response)
+      
 
         if (response.status === 200){
             

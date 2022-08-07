@@ -71,7 +71,7 @@ class detailRequest(APIView):
     def post(self,request,id):
         
         app = Application.objects.get(id=id)
-        print(app.address,"iiii")
+       
         SerializeObj=ApplicationSerializer(app)
         return Response(SerializeObj.data)
 
@@ -138,5 +138,5 @@ class reservedDetail(APIView):
     def post(self,request,id):
         add = Application.objects.get(alloted_slot = id)
         serializeobj=ApplicationSerializer(add)
-        print(serializeobj.data)
+       
         return Response(serializeobj.data)

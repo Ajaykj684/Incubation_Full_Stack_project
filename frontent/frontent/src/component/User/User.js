@@ -39,7 +39,6 @@ function User() {
     let {logout} = useContext(AuthContext)
 
 
-    console.log(user,"pp")
     const Application = async (e) => {
         e.preventDefault();
 
